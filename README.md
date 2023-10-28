@@ -14,12 +14,18 @@ Trabalho EP2 Somático
 10. Remover duplicata de PCR;
 11. Instalar o bedtools;
 12. BAMtoBED,merge e sort;
-13. Baixar as referências (Pon e Gnomad);
-14. Cobertura média;
-15. Filtragem por reads >=20;
+13. Cobertura média;
+14. Filtragem por reads >=20;
+15. Baixar as referências (Pon e Gnomad);
 16. Instalar GATK (MuTect2 com PoN);
 17. Descompactar GATK;
 18. Gerar arquivo .dict;
+19. Gerar interval_list do chr9;
+20. Converter Bed para Interval_list;
+21. GATK4 - CalculateContamination;
+22. GATK4 - MuTect2 Call;
+23. GATK4 - MuTect2 FilterMutectCalls;
+24. 
 
 # 1- Instalar utilizando o brew install (gitpod)
 ```bash
@@ -103,7 +109,17 @@ bedtools merge -i WP312_sorted_rmdup.bed > WP312_sorted_merged.bed
 bedtools sort -i WP312_sorted_merged.bed > WP312_sorted_merged_sorted.bed
 ```
 
-# 13 - Baixar as referências (Pon e Gnomad)
+# 13 - Cobertura média
+```bash
+bedtools coverage -a WP312_sorted_merged.bed -b WP312_sorted_rmdup.bam -mean > WP312_coverageBed.bed
+```
+
+# 14 - Filtragem por reads >=20
+```bash
+cat WP312_coverageBed.bed | awk -F "\t" '{if($4>=20){print}}' > WP312_coverageBed20x.bed
+```
+
+# 15 - Baixar as referências (Pon e Gnomad)
 ```bash
 wget -c https://storage.googleapis.com/gatk-best-practices/somatic-b37/Mutect2-WGS-panel-b37.vcf
 ```
@@ -130,11 +146,35 @@ bedtools coverage -a WP312_sorted_merged.bed -b WP312_sorted_rmdup.bam -mean > W
 cat WP312_coverageBed.bed | awk -F "\t" '{if($4>=20){print}}' > WP312_coverageBed20x.bed
 ```
 
+# 16 - Instalar GATK (MuTect2 com PoN)
+```bash
+wget -c https://github.com/broadinstitute/gatk/releases/download/4.2.2.0/gatk-4.2.2.0.zip
+```
 
-16. Instalar GATK (MuTect2 com PoN);
-17. Descompactar GATK;
-18. Gerar arquivo .dict;
+# 17 - Descompactar GATK
+```bash
+unzip gatk-4.2.2.0.zip
+```
 
+# 18 - Gerar arquivo .dict
+```bash
+./gatk-4.2.2.0/gatk CreateSequenceDictionary -R chr9.fa -O chr9.dict
+```
+
+# 19 - Gerar interval_list do chr9
+```bash
+./gatk-4.2.2.0/gatk ScatterIntervalsByNs -R chr9.fa -O chr9.interval_list -OT ACGT
+```
+
+# 20 - Converter Bed para Interval_list
+```bash
+./gatk-4.2.2.0/gatk BedToIntervalList -I WP312_coverageBed20x.bed \
+-O WP312_coverageBed20x.interval_list -SD chr9.dict
+```
+
+21. GATK4 - CalculateContamination;
+22. GATK4 - MuTect2 Call;
+23. GATK4 - MuTect2 FilterMutectCalls;
 
 
 
