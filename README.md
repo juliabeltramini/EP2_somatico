@@ -1,7 +1,7 @@
 # EP2_somatico
 Trabalho EP2 Somático
 
-#Workflow
+##Workflow:
 1. Instalar os arquivos (sratoolkit, parallel-fastq-dump e vdb-config);
 2. Baixar o arquivo FASTQ;
 3. Baixar referências;
@@ -18,6 +18,10 @@ Trabalho EP2 Somático
 14. Descompactar GATK;
 15. Gerar arquivo .dict;
 
-# 1
-## instalar utilizando o brew install (gitpod)
+# 1- Instalar utilizando o brew install (gitpod)
 brew install sratoolkit
+
+# 1.1 - Instalar parallel fastq-dump
+pip install parallel-fastq-dump
+
+
