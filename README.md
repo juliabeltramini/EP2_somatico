@@ -11,13 +11,14 @@ Trabalho EP2 Somático
 7. Instalar samtools;
 8. criar arquivo fasta do cromossomo 9;
 9. Fazer o alinhamento (Combinar com pipes: bwa + samtools view e sort);
-10. Instalar bedtools;
-11. BAMtoBED,merge e sort;
-12. Cobertura média;
-13. Filtragem por reads >=20;
-14. Instalar GATK (MuTect2 com Pon);
-15. Descompactar GATK;
-16. Gerar arquivo .dict;
+10. Remover duplicata de PCR;
+11. Instalar bedtools;
+12. BAMtoBED,merge e sort;
+13. Cobertura média;
+14. Filtragem por reads >=20;
+15. Instalar GATK (MuTect2 com Pon);
+16. Descompactar GATK;
+17. Gerar arquivo .dict;
 
 # 1- Instalar utilizando o brew install (gitpod)
 ```bash
@@ -73,11 +74,32 @@ brew install samtools
 ```bash
 samtools faidx chr9.fa
 ```
-# 9 - Fazer o alinhamento (Combinar com pipes: bwa + samtools view e sort
+# 9 - Fazer o alinhamento (Combinar com pipes: bwa + samtools view e sort)
 ```bash
 NOME=WP312; Biblioteca=Nextera; Plataforma=illumina;
 bwa mem -t 10 -M -R "@RG\tID:$NOME\tSM:$NOME\tLB:$Biblioteca\tPL:$Plataforma" chr9.fa SRR8856724_1.fastq.gz SRR8856724_2.fastq.gz | samtools view -F4 -Sbu -@2 - | samtools sort -m4G -@2 -o WP312_sorted.bam
 ```
+# 10 - Remover duplicata de PCR;
+```bash
+samtools rmdup WP312_sorted.bam WP312_sorted_rmdup.bam
+```
+
+# 11 - Baixar as referências (Pon e Gnomad)
+```bash
+wget -c https://storage.googleapis.com/gatk-best-practices/somatic-b37/Mutect2-WGS-panel-b37.vcf
+```
+
+```bash
+wget -c https://storage.googleapis.com/gatk-best-practices/somatic-b37/Mutect2-WGS-panel-b37.vcf.idx
+```
+
+
+
+13. Cobertura média;
+14. Filtragem por reads >=20;
+15. Instalar GATK (MuTect2 com Pon);
+16. Descompactar GATK;
+17. Gerar arquivo .dict;
 
 
 
